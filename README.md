@@ -1,1 +1,3 @@
 # jUtils
+
+Private Discord bot
