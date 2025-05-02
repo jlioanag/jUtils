@@ -19,12 +19,13 @@ const leaveCommand = {
         ),
 
     async execute(interaction: ChatInputCommandInteraction) {
-        console.log("[DEBUG] Recieved interaction for leave command");
-
+        
         const game = interaction.options.getString("game", true);
-
+        
         const roleId = GAME_ROLES[game];
         const member = interaction.member as GuildMember;
+        
+        console.log(`[DEBUG] Recieved interaction for leave command from user ${member.user.username} for game ${game}`);
 
         if (!member.roles.cache.has(roleId)) {
             await interaction.reply({
