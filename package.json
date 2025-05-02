@@ -2,14 +2,24 @@
   "name": "jutils",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npx tsc && npx tsc-alias",
+    "start": "pnpm run build && node dist",
+    "watch": "npx tsc -w && npx tsc-alias -w",
+    "deploy": "pnpm run clean && pnpm run build && node dist/deploy-commands.js",
+    "test": "echo 🤫🧏",
+    "clean": "npx rimraf dist",
+    "prepare": "simple-git-hooks"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "discord.js": "^14.19.2",
+    "dotenv": "^16.5.0"
   }
 }
