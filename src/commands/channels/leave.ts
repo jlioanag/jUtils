@@ -11,20 +11,27 @@ const leaveCommand = {
                 .setDescription("The game you want to leave")
                 .setRequired(true)
                 .addChoices(
-                    Object.keys(GAME_ROLES).map((game: string) => ({
-                        name: game,
-                        value: game,
+                    GAME_ROLES.map((game) => ({
+                        name: game.title,
+                        value: game.id,
                     }))
                 )
         ),
 
     async execute(interaction: ChatInputCommandInteraction) {
-        
+
         const game = interaction.options.getString("game", true);
-        
-        const roleId = GAME_ROLES[game];
+
+        const roleId = GAME_ROLES.find((role) => role.id === game)?.roleId;
+        if (!roleId) {
+            await interaction.reply({
+                content: `❌ The game \`${game}\` does not exist or is not configured properly.`,
+                flags: MessageFlags.Ephemeral
+            });
+            return;
+        }
         const member = interaction.member as GuildMember;
-        
+
         console.log(`[DEBUG] Recieved interaction for leave command from user ${member.user.username} for game ${game}`);
 
         if (!member.roles.cache.has(roleId)) {
