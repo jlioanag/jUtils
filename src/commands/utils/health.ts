@@ -1,17 +1,21 @@
-import { ChatInputCommandInteraction, MessageFlags, SlashCommandBuilder } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  MessageFlags,
+  SlashCommandBuilder,
+} from "discord.js";
 
 const healthCommand = {
-    data: new SlashCommandBuilder()
-        .setName("health")
-        .setDescription("Check if the bot is healthy"),
+  data: new SlashCommandBuilder()
+    .setName("health")
+    .setDescription("Check if the bot is healthy"),
 
-    async execute(interaction: ChatInputCommandInteraction) {
-        console.log("[DEBUG] Recieved interaction for health command");
-        await interaction.reply({
-            content: "I am healthy!",
-            flags: MessageFlags.Ephemeral
-        });
-    },
+  async execute(interaction: ChatInputCommandInteraction) {
+    console.log("[DEBUG] Recieved interaction for health command");
+    await interaction.reply({
+      content: "I am healthy!",
+      flags: MessageFlags.Ephemeral,
+    });
+  },
 };
 
 export default healthCommand;
