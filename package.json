@@ -8,7 +8,6 @@
     "start": "pnpm run build && node dist",
     "watch": "npx tsc -w && npx tsc-alias -w",
     "deploy": "pnpm run clean && pnpm run build && node dist/deploy-commands.js",
-    "test": "echo 🤫🧏",
     "clean": "npx rimraf dist",
     "prepare": "simple-git-hooks"
   },
@@ -16,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "simple-git-hooks": "^2.13.1",
     "typescript": "^5.8.3"
   },
   "dependencies": {

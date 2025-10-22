@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   discord.js: ^14.19.2
   dotenv: ^16.5.0
+  simple-git-hooks: ^2.13.1
   typescript: ^5.8.3
 
 dependencies:
@@ -10,6 +11,7 @@ dependencies:
   dotenv: 16.5.0
 
 devDependencies:
+  simple-git-hooks: 2.13.1
   typescript: 5.8.3
 
 packages:
@@ -163,6 +165,12 @@ packages:
   /magic-bytes.js/1.12.1:
     resolution: {integrity: sha512-ThQLOhN86ZkJ7qemtVRGYM+gRgR8GEXNli9H/PMvpnZsE44Xfh3wx9kGJaldg314v85m+bFW6WBMaVHJc/c3zA==}
     dev: false
+
+  /simple-git-hooks/2.13.1:
+    resolution: {integrity: sha512-WszCLXwT4h2k1ufIXAgsbiTOazqqevFCIncOuUBZJ91DdvWcC5+OFkluWRQPrcuSYd8fjq+o2y1QfWqYMoAToQ==}
+    hasBin: true
+    requiresBuild: true
+    dev: true
 
   /ts-mixer/6.0.4:
     resolution: {integrity: sha512-ufKpbmrugz5Aou4wcr5Wc1UUFWOLhq+Fm6qa6P0w0K5Qw2yhaUoiWszhCVuNQyNwrlGiscHOmqYoAox1PtvgjA==}
