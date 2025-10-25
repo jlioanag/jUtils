@@ -12,7 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "paths": {
-      "@/*": ["src/*"],
+      "@/*": ["src/*"]
     }
   },
   "include": ["src/**/*", "generated"],

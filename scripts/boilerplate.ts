@@ -1,18 +1,18 @@
-import { PrismaClient } from '../generated/prisma';
+import { PrismaClient } from "../generated/prisma";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 async function main() {
-  const gameRoles = await prisma.gameRole.findMany()
-  console.log(gameRoles)
+  const gameRoles = await prisma.gameRole.findMany();
+  console.log(gameRoles);
 }
 
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
