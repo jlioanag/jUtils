@@ -18,6 +18,8 @@ RUN pnpm install
 # Copy all source files to container
 COPY . .
 
+RUN pnpm prisma generate
+
 # Expose port if needed (optional)
 EXPOSE 3000
 
