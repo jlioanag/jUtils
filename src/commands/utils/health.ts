@@ -4,7 +4,7 @@ import {
   SlashCommandBuilder,
 } from "discord.js";
 
-const healthCommand = {
+module.exports = {
   data: new SlashCommandBuilder()
     .setName("health")
     .setDescription("Check if the bot is healthy"),
@@ -17,5 +17,3 @@ const healthCommand = {
     });
   },
 };
-
-export default healthCommand;

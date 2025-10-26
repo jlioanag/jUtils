@@ -5,12 +5,15 @@ import {
   GatewayIntentBits,
   MessageFlags,
 } from "discord.js";
-import dotenv from "dotenv";
-import path from "path";
-import fs from "fs";
+import fs from 'node:fs';
+import path from 'node:path';
+import dotenv from 'dotenv';
+import { PrismaClient } from "../src/generated/prisma";
 
 // Load environment variables from .env file
 dotenv.config();
+
+export const prisma = new PrismaClient()
 
 // Create a new Discord client instance
 export const client = new Client({
@@ -21,17 +24,43 @@ export const client = new Client({
   ],
 });
 
+// Initialize commands collection
 client.commands = new Collection();
+const foldersPath = path.join(__dirname, 'commands');
+const commandFolders = fs.readdirSync(foldersPath);
 
-const handlersDir = path.join(__dirname, "./handlers");
-fs.readdirSync(handlersDir).forEach((handler) => {
-  if (!handler.endsWith(".js") && !handler.endsWith(".ts")) return;
-  require(`${handlersDir}/${handler}`)(client);
-});
+for (const folder of commandFolders) {
+  const commandsPath = path.join(foldersPath, folder);
+  const commandFiles = fs
+    .readdirSync(commandsPath)
+    .filter((file) => file.endsWith('.js'));
+  for (const file of commandFiles) {
+    const filePath = path.join(commandsPath, file);
+    const command = require(filePath);
+    console.log(`[INFO] Loading ${file}`);
+    if (command && 'data' in command && 'execute' in command) {
+      client.commands.set(command.data.name, command);
+    } else {
+      console.log(
+        `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`,
+      );
+    }
+  }
+}
 
 console.log(client.commands);
 
-// Login to Discord with your bot token
-client.login(process.env.DISCORD_TOKEN).catch((err) => {
-  console.error("Failed to login:", err);
-});
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
+
+for (const file of eventFiles) {
+  const filePath = path.join(eventsPath, file);
+  const event = require(filePath);
+  if (event.once) {
+    client.once(event.name, (...args) => event.execute(...args));
+  } else {
+    client.on(event.name, (...args) => event.execute(...args));
+  }
+}
+
+client.login(process.env.DISCORD_TOKEN);

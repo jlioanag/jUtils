@@ -1,12 +1,13 @@
-import { GAME_ROLES } from "@/defaults";
+import { prisma } from "@/index";
 import {
+  AutocompleteInteraction,
   ChatInputCommandInteraction,
   GuildMember,
   MessageFlags,
   SlashCommandBuilder,
 } from "discord.js";
 
-const joinCommand = {
+module.exports = {
   data: new SlashCommandBuilder()
     .setName("join")
     .setDescription("Choose a game channel to join.")
@@ -15,53 +16,63 @@ const joinCommand = {
         .setName("game")
         .setDescription("The game you want to join")
         .setRequired(true)
-        .addChoices(
-          GAME_ROLES.map((game) => ({
-            name: game.title,
-            value: game.id,
-          })),
-        ),
+        .setAutocomplete(true),
     ),
-
+  async autocomplete(interaction: AutocompleteInteraction) {
+    console.log("[DEBUG] Autocomplete interaction received");
+    const userInput = interaction.options.getFocused();
+    const matchingItems = await prisma.gameRole.findMany({ where: { title: { contains: userInput } }, take: 5 });
+    await interaction.respond(
+      matchingItems.map((item) => ({ name: item.title, value: item.title })),
+    );
+  },
   async execute(interaction: ChatInputCommandInteraction) {
     const game = interaction.options.getString("game", true);
 
-    const roleId = GAME_ROLES.find((role) => role.id === game)?.roleId;
-    if (!roleId) {
-      await interaction.reply({
-        content: `❌ The game \`${game}\` does not exist or is not configured properly.`,
-        flags: MessageFlags.Ephemeral,
-      });
-      return;
-    }
-    const member = interaction.member as GuildMember;
+    prisma.gameRole.findFirst({ where: { title: game } })
+      .then(async (gameRole) => {
+        if (!gameRole) {
+          await interaction.reply({
+            content: `❌ The game \`${game}\` does not exist or is not configured properly.`,
+            flags: MessageFlags.Ephemeral,
+          });
+          return;
+        }
 
-    console.log(
-      `[DEBUG] Recieved interaction for join command from user ${member.user.username} for game ${game}`,
-    );
+        const roleId = gameRole.roleId;
+        const member = interaction.member as GuildMember;
 
-    if (member.roles.cache.has(roleId)) {
-      await interaction.reply({
-        content: `You are already in the ${game} channel!`,
-        flags: MessageFlags.Ephemeral,
-      });
-      return;
-    }
+        console.log(
+          `[DEBUG] Recieved interaction for join command from user ${member.user.username} for game ${game}`,
+        );
 
-    try {
-      await member.roles.add(roleId);
-      await interaction.reply({
-        content: `✅ You have been added to the ${game} channel!`,
-        flags: MessageFlags.Ephemeral,
+        if (member.roles.cache.has(roleId)) {
+          await interaction.reply({
+            content: `You are already in the ${game} channel!`,
+            flags: MessageFlags.Ephemeral,
+          });
+          return;
+        }
+
+        try {
+          await member.roles.add(roleId);
+          await interaction.reply({
+            content: `✅ You have been added to the ${game} channel!`,
+            flags: MessageFlags.Ephemeral,
+          });
+        } catch (error) {
+          console.error(error);
+          await interaction.reply({
+            content: `❌ Failed to assign \`role:${roleId}\` for \`game:${game}\`.`,
+            flags: MessageFlags.Ephemeral,
+          });
+        }
+      }).catch(async () => {
+        await interaction.reply({
+          content: `❌ The game \`${game}\` does not exist or is not configured properly.`,
+          flags: MessageFlags.Ephemeral,
+        });
+        return;
       });
-    } catch (error) {
-      console.error(error);
-      await interaction.reply({
-        content: `❌ Failed to assign \`role:${roleId}\` for \`game:${game}\`.`,
-        flags: MessageFlags.Ephemeral,
-      });
-    }
   },
 };
-
-export default joinCommand;
