@@ -1,22 +1,22 @@
 import { PrismaClient } from "../src/generated/prisma";
-import * as readline from 'node:readline';
+import * as readline from "node:readline";
 
 const prisma = new PrismaClient();
 
 async function main() {
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
 
   const _title = await new Promise<string>((resolve) => {
-    rl.question('Enter title: ', (answer) => {
+    rl.question("Enter title: ", (answer) => {
       resolve(answer);
     });
   });
 
   const _roleId = await new Promise<string>((resolve) => {
-    rl.question('Enter role ID: ', (answer) => {
+    rl.question("Enter role ID: ", (answer) => {
       resolve(answer);
     });
   });
@@ -33,7 +33,7 @@ async function main() {
       title: _title,
       roleId: _roleId,
     },
-  })
+  });
 
   console.log(`Added GameRole: ${gameRole}`);
 

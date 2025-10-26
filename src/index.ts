@@ -5,15 +5,15 @@ import {
   GatewayIntentBits,
   MessageFlags,
 } from "discord.js";
-import fs from 'node:fs';
-import path from 'node:path';
-import dotenv from 'dotenv';
+import fs from "node:fs";
+import path from "node:path";
+import dotenv from "dotenv";
 import { PrismaClient } from "../src/generated/prisma";
 
 // Load environment variables from .env file
 dotenv.config();
 
-export const prisma = new PrismaClient()
+export const prisma = new PrismaClient();
 
 // Create a new Discord client instance
 export const client = new Client({
@@ -26,19 +26,19 @@ export const client = new Client({
 
 // Initialize commands collection
 client.commands = new Collection();
-const foldersPath = path.join(__dirname, 'commands');
+const foldersPath = path.join(__dirname, "commands");
 const commandFolders = fs.readdirSync(foldersPath);
 
 for (const folder of commandFolders) {
   const commandsPath = path.join(foldersPath, folder);
   const commandFiles = fs
     .readdirSync(commandsPath)
-    .filter((file) => file.endsWith('.js'));
+    .filter((file) => file.endsWith(".js"));
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
     const command = require(filePath);
     console.log(`[INFO] Loading ${file}`);
-    if (command && 'data' in command && 'execute' in command) {
+    if (command && "data" in command && "execute" in command) {
       client.commands.set(command.data.name, command);
     } else {
       console.log(
@@ -50,8 +50,10 @@ for (const folder of commandFolders) {
 
 console.log(client.commands);
 
-const eventsPath = path.join(__dirname, 'events');
-const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
+const eventsPath = path.join(__dirname, "events");
+const eventFiles = fs
+  .readdirSync(eventsPath)
+  .filter((file) => file.endsWith(".js"));
 
 for (const file of eventFiles) {
   const filePath = path.join(eventsPath, file);

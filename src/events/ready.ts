@@ -1,4 +1,4 @@
-import { Events, Client } from 'discord.js';
+import { Events, Client } from "discord.js";
 
 module.exports = {
   name: Events.ClientReady,

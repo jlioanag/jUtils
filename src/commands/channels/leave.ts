@@ -1,4 +1,4 @@
-import { prisma } from '@/index';
+import { prisma } from "@/index";
 import {
   AutocompleteInteraction,
   ChatInputCommandInteraction,
@@ -21,7 +21,10 @@ module.exports = {
   async autocomplete(interaction: AutocompleteInteraction) {
     console.log("[DEBUG] Autocomplete interaction received");
     const userInput = interaction.options.getFocused();
-    const matchingItems = await prisma.gameRole.findMany({ where: { title: { contains: userInput } }, take: 5 });
+    const matchingItems = await prisma.gameRole.findMany({
+      where: { title: { contains: userInput } },
+      take: 5,
+    });
     await interaction.respond(
       matchingItems.map((item) => ({ name: item.title, value: item.title })),
     );
@@ -29,7 +32,8 @@ module.exports = {
   async execute(interaction: ChatInputCommandInteraction) {
     const game = interaction.options.getString("game", true);
 
-    prisma.gameRole.findFirst({ where: { title: game } })
+    prisma.gameRole
+      .findFirst({ where: { title: game } })
       .then(async (gameRole) => {
         if (!gameRole) {
           await interaction.reply({
@@ -67,7 +71,8 @@ module.exports = {
             flags: MessageFlags.Ephemeral,
           });
         }
-      }).catch(async () => {
+      })
+      .catch(async () => {
         await interaction.reply({
           content: `❌ The game \`${game}\` does not exist or is not configured properly.`,
           flags: MessageFlags.Ephemeral,
