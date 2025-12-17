@@ -4,3 +4,4 @@ config.json
 dist/*
 /src/generated/prisma
 *.db
+data/*

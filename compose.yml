@@ -1,0 +1,9 @@
+services:
+  jutils:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jutils-bot
+    restart: unless-stopped
+    volumes:
+      - ./data:/prisma
