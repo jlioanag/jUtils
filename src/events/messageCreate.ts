@@ -1,6 +1,7 @@
 import { Events, Message } from "discord.js";
 
-const TWITTER_REGEX = /https?:\/\/(?:www\.)?(?:twitter|x)\.com\/([^\s\/]+)\/status(?:es)?\/([0-9]+)/gi;
+const TWITTER_REGEX =
+  /https?:\/\/(?:www\.)?(?:twitter|x)\.com\/([^\s\/]+)\/status(?:es)?\/([0-9]+)/gi;
 
 module.exports = {
   name: Events.MessageCreate,
@@ -15,12 +16,17 @@ module.exports = {
       // limit to first 10 matches to avoid overly long replies
       const conversions = matches.slice(0, 10).map((m) => {
         const original = m[0];
-        const fxtwitter = original.replace(/https?:\/\/(?:www\.)?(?:twitter|x)\.com/, "https://fxtwitter.com");
+        const fxtwitter = original.replace(
+          /https?:\/\/(?:www\.)?(?:twitter|x)\.com/,
+          "https://fxtwitter.com",
+        );
         return { original, fxtwitter };
       });
 
       // Build a concise reply listing conversions (fxtwitter only per user preference)
-      const replyLines = conversions.map((c) => `${c.original} -> ${c.fxtwitter}`);
+      const replyLines = conversions.map(
+        (c) => `${c.original} -> ${c.fxtwitter}`,
+      );
 
       // Reply publicly in the same channel
       await message.reply({ content: replyLines.join("\n") });
