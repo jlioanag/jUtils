@@ -29,7 +29,28 @@ module.exports = {
       );
 
       // Reply publicly in the same channel
-      await message.reply({ content: replyLines.join("\n") });
+      await message
+        .reply({ content: replyLines.join("\n") })
+        .then(() => {
+          message.suppressEmbeds(true).catch((err: unknown) => {
+            const errMsg: string = (err as Error).message;
+
+            if (errMsg.includes("Missing Permissions")) {
+              return;
+            }
+
+            console.error(`Failed to suppress embeds: ${(err as Error).message}`, "Events.MessageCreate");
+          });
+        })
+        .catch((err: unknown) => {
+          const errMsg: string = (err as Error).message;
+
+          if (errMsg.includes("Missing Permissions")) {
+            return;
+          }
+
+          console.error(`Failed to reply: ${(err as Error).message}`, "Events.MessageCreate");
+        });
     } catch (err) {
       console.error("Error in messageCreate event:", err);
     }
