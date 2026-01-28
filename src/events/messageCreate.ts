@@ -25,7 +25,7 @@ module.exports = {
 
       // Build a concise reply listing conversions (fxtwitter only per user preference)
       const replyLines = conversions.map(
-        (c) => `${c.original} -> ${c.fxtwitter}`,
+        (c) => `${c.fxtwitter}`,
       );
 
       // Reply publicly in the same channel
