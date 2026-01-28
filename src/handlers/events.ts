@@ -6,7 +6,7 @@ module.exports = (client: Client) => {
   const eventsPath = path.join(__dirname, "../events");
   const eventFiles = fs
     .readdirSync(eventsPath)
-    .filter((file) => file.endsWith(".js"));
+    .filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
 
   for (const file of eventFiles) {
     const filePath = path.join(eventsPath, file);
