@@ -9,9 +9,13 @@ type Provider = {
 const providers: Provider[] = [
   {
     name: "twitter",
-    regex: /https?:\/\/(?:www\.)?(?:twitter|x)\.com\/([^\s\/]+)\/status(?:es)?\/([0-9]+)/gi,
+    regex:
+      /https?:\/\/(?:www\.)?(?:twitter|x)\.com\/([^\s\/]+)\/status(?:es)?\/([0-9]+)/gi,
     transform: (original) =>
-      original.replace(/https?:\/\/(?:www\.)?(?:twitter|x)\.com/, "https://fxtwitter.com"),
+      original.replace(
+        /https?:\/\/(?:www\.)?(?:twitter|x)\.com/,
+        "https://fxtwitter.com",
+      ),
   },
   {
     name: "reddit",
@@ -30,7 +34,11 @@ module.exports = {
       if (!message.content) return;
       if (message.author?.bot) return;
 
-      const conversions: Array<{ original: string; converted: string; provider: string }> = [];
+      const conversions: Array<{
+        original: string;
+        converted: string;
+        provider: string;
+      }> = [];
       const seen = new Set<string>();
 
       for (const provider of providers) {
@@ -57,13 +65,19 @@ module.exports = {
           message.suppressEmbeds(true).catch((err: unknown) => {
             const errMsg: string = (err as Error).message;
             if (errMsg.includes("Missing Permissions")) return;
-            console.error(`Failed to suppress embeds: ${(err as Error).message}`, "Events.MessageCreate");
+            console.error(
+              `Failed to suppress embeds: ${(err as Error).message}`,
+              "Events.MessageCreate",
+            );
           });
         })
         .catch((err: unknown) => {
           const errMsg: string = (err as Error).message;
           if (errMsg.includes("Missing Permissions")) return;
-          console.error(`Failed to reply: ${(err as Error).message}`, "Events.MessageCreate");
+          console.error(
+            `Failed to reply: ${(err as Error).message}`,
+            "Events.MessageCreate",
+          );
         });
     } catch (err) {
       console.error("Error in messageCreate event:", err);

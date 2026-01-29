@@ -45,13 +45,24 @@ async function postMisatoToGuild(channel: TextChannel) {
 export function scheduleMisatoMonday(client: Client) {
   async function scheduleOnce() {
     const delay = msUntilNextMonday5pm();
-    console.log(`Scheduling Misato Monday in ${Math.round(delay / 1000)}s`);
+    const totalSeconds = Math.max(0, Math.floor(delay / 1000));
+    const days = Math.floor(totalSeconds / 86400);
+    let rem = totalSeconds % 86400;
+    const hours = Math.floor(rem / 3600);
+    rem %= 3600;
+    const minutes = Math.floor(rem / 60);
+    const seconds = rem % 60;
+
+    console.log(
+      `Scheduling upcoming Misato Monday in ${days}d ${hours}h ${minutes}m ${seconds}s`,
+    );
 
     setTimeout(async () => {
       for (const [, guild] of client.guilds.cache) {
         try {
           const channel = guild.channels.cache.find(
-            (c: any) => c.type === ChannelType.GuildText && c.name === "general"
+            (c: any) =>
+              c.type === ChannelType.GuildText && c.name === "general",
           ) as TextChannel | undefined;
 
           if (channel) await postMisatoToGuild(channel);
