@@ -9,7 +9,8 @@
     "watch": "npx tsc -w && npx tsc-alias -w",
     "deploy": "pnpm run clean && pnpm run build && node dist/deploy-commands.js",
     "clean": "npx rimraf dist",
-    "prepare": "simple-git-hooks"
+    "prepare": "simple-git-hooks",
+    "deploy:compose": "docker compose up -d --build --force-recreate --remove-orphans"
   },
   "keywords": [],
   "author": "",
