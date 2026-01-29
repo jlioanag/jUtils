@@ -1,4 +1,10 @@
-import { Client, EmbedBuilder, ChannelType, TextChannel, GuildBasedChannel } from "discord.js";
+import {
+  Client,
+  EmbedBuilder,
+  ChannelType,
+  TextChannel,
+  GuildBasedChannel,
+} from "discord.js";
 import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 
 const GIF_URL = "https://i.imgur.com/3WeiSsS.gif";
