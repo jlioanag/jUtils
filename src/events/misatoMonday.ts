@@ -1,4 +1,4 @@
-import { Client, EmbedBuilder, ChannelType, TextChannel } from "discord.js";
+import { Client, EmbedBuilder, ChannelType, TextChannel, GuildBasedChannel } from "discord.js";
 import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 
 const GIF_URL = "https://i.imgur.com/3WeiSsS.gif";
@@ -61,7 +61,7 @@ export function scheduleMisatoMonday(client: Client) {
       for (const [, guild] of client.guilds.cache) {
         try {
           const channel = guild.channels.cache.find(
-            (c: any) =>
+            (c: GuildBasedChannel) =>
               c.type === ChannelType.GuildText && c.name === "general",
           ) as TextChannel | undefined;
 
