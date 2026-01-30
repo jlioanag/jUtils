@@ -60,7 +60,9 @@ module.exports = {
       const replyLines = conversions.map((c) => c.converted);
 
       await message
-        .reply({ content: `@${message.author.username}:\n\n` + replyLines.join("\n") })
+        .reply({
+          content: `@${message.author.username}:\n\n` + replyLines.join("\n"),
+        })
         .then(() => {
           message.delete().catch((err: unknown) => {
             console.error(
