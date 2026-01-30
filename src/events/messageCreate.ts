@@ -60,13 +60,11 @@ module.exports = {
       const replyLines = conversions.map((c) => c.converted);
 
       await message
-        .reply({ content: replyLines.join("\n") })
+        .reply({ content: `@${message.author.username}:\n\n` + replyLines.join("\n") })
         .then(() => {
-          message.suppressEmbeds(true).catch((err: unknown) => {
-            const errMsg: string = (err as Error).message;
-            if (errMsg.includes("Missing Permissions")) return;
+          message.delete().catch((err: unknown) => {
             console.error(
-              `Failed to suppress embeds: ${(err as Error).message}`,
+              `Failed to delete original message: ${(err as Error).message}`,
               "Events.MessageCreate",
             );
           });
