@@ -47,7 +47,7 @@ module.exports = {
         const member = interaction.member as GuildMember;
 
         console.log(
-          `[DEBUG] Recieved interaction for join command from user ${member.user.username} for game ${game}`,
+          `[DEBUG] Received interaction for join command from user ${member.user.username} for game ${game}`,
         );
 
         if (!member.roles.cache.has(roleId)) {
