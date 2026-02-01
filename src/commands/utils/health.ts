@@ -10,7 +10,7 @@ module.exports = {
     .setDescription("Check if the bot is healthy"),
 
   async execute(interaction: ChatInputCommandInteraction) {
-    console.log("[DEBUG] Recieved interaction for health command");
+    console.log("[DEBUG] Received interaction for health command");
     await interaction.reply({
       content: "I am healthy!",
       flags: MessageFlags.Ephemeral,
