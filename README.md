@@ -2,8 +2,8 @@
 
 Private Discord bot
 
-- Running on Node
-- Using Discord.js + Prisma
+- Node (Discord.js)
+- Prism ORM & sqlite
 
 ## Commands
 
