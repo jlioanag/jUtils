@@ -39,4 +39,4 @@ jobs:
           pnpm run build
 
       - name: Prettier check
-        run: pnpm exec -- prettier --check .
+        run: pnpm run format:check

@@ -7,6 +7,7 @@
     "build": "npx tsc && npx tsc-alias",
     "start": "pnpm run build && node dist",
     "watch": "npx tsc -w && npx tsc-alias -w",
+    "format:check": "prettier --check .",
     "deploy": "pnpm run clean && pnpm run build && node dist/deploy-commands.js",
     "clean": "npx rimraf dist",
     "prepare": "simple-git-hooks",
@@ -20,7 +21,8 @@
     "prisma": "^6.18.0",
     "simple-git-hooks": "^2.13.1",
     "tsx": "^4.20.6",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "prettier": "^3.9.0"
   },
   "dependencies": {
     "@prisma/client": "^6.18.0",
