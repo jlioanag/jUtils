@@ -61,7 +61,7 @@ module.exports = {
 
       await message
         .reply({
-          content: `@${message.author.username}:\n\n` + replyLines.join("\n"),
+          content: `${message.author.mention}:\n\n` + replyLines.join("\n"),
         })
         .then(() => {
           message.delete().catch((err: unknown) => {
