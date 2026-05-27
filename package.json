@@ -37,5 +37,9 @@
     "onlyBuiltDependencies": [
       "@prisma/client"
     ]
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx prettier --write . && npx tsc --noEmit",
+    "commit-msg": "npx commitlint --edit"
   }
 }
