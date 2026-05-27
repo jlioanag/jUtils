@@ -1,6 +1,7 @@
 import { Events, Client } from "discord.js";
 
 import scheduleMisatoMonday from "./misatoMonday";
+import scheduleFoenemFriday from "./foenemFriday";
 
 module.exports = {
   name: Events.ClientReady,
@@ -11,6 +12,12 @@ module.exports = {
       scheduleMisatoMonday(client);
     } catch (err) {
       console.error("Failed to schedule Misato Monday:", err);
+    }
+
+    try {
+      scheduleFoenemFriday(client);
+    } catch (err) {
+      console.error("Failed to schedule Foenem Friday:", err);
     }
   },
 };
