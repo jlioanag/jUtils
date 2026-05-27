@@ -12,7 +12,8 @@ ENV PATH=$PNPM_HOME:$PATH
 WORKDIR /app
 
 # Copy package definition files and install dependencies
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm config list
 RUN pnpm install
 
 # Copy all source files to container
