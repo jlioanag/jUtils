@@ -2,6 +2,7 @@ import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   Client,
+  MessageFlags,
 } from "discord.js";
 import { runModrinthCheck } from "../../events/modrinthDaily";
 
@@ -11,10 +12,10 @@ module.exports = {
     .setDescription("Run Modrinth fetch and post to guilds (debug)"),
 
   async execute(interaction: ChatInputCommandInteraction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     try {
       const client = interaction.client as Client;
-      const posted = await runModrinthCheck(client);
+      const posted = await runModrinthCheck(client, true);
       await interaction.editReply({
         content: `Modrinth check completed. Posted to ${posted} guild(s).`,
       });

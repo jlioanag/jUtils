@@ -13,6 +13,20 @@ const API_URL = "https://api.modrinth.com/v2/project/cobbleverse/version";
 const PROJECT_URL = "https://modrinth.com/project/cobbleverse";
 const TIMEZONE = "America/New_York"; // follow project's default timezone
 
+// Track the version at process start. We compare future checks to this value
+// and only post if the latest is different from this initial value.
+let initialVersionId: string | null = null;
+
+function versionIdentifier(version: any): string {
+  return (
+    version?.id ||
+    version?.version_id ||
+    version?.version_number ||
+    version?.name ||
+    JSON.stringify(version)
+  );
+}
+
 function msUntilNextMidnight(timezone: string = TIMEZONE): number {
   const now = new Date();
   const nowInTz = utcToZonedTime(now, timezone);
@@ -78,15 +92,19 @@ function buildEmbedFromVersion(version: any): EmbedBuilder {
     : null;
 
   const fields: { name: string; value: string; inline?: boolean }[] = [];
-  fields.push({ name: "Version", value: String(versionNumber), inline: true });
+  fields.push({
+    name: "Modpack Version",
+    value: String(versionNumber),
+    inline: true,
+  });
   if (datePublished)
     fields.push({
       name: "Published",
-      value: String(datePublished),
+      value: new Date(datePublished).toLocaleString("en-US"),
       inline: true,
     });
   if (gameVersions)
-    fields.push({ name: "Game Versions", value: gameVersions, inline: true });
+    fields.push({ name: "Game Version(s)", value: gameVersions, inline: true });
 
   if (fields.length) embed.addFields(...fields);
 
@@ -102,7 +120,10 @@ function buildEmbedFromVersion(version: any): EmbedBuilder {
   return embed;
 }
 
-export async function runModrinthCheck(client: Client): Promise<number> {
+export async function runModrinthCheck(
+  client: Client,
+  forcePost = false,
+): Promise<number> {
   try {
     const json = await fetchJson(API_URL);
     if (!Array.isArray(json) || json.length === 0) {
@@ -111,6 +132,20 @@ export async function runModrinthCheck(client: Client): Promise<number> {
     }
 
     const latest = json[0];
+    const latestId = versionIdentifier(latest);
+
+    // If we are not forcing a post (e.g. scheduled run), and we have an initial
+    // version captured at runtime start, only post if the latest differs from
+    // that initial version. Otherwise just log the current version.
+    if (
+      !forcePost &&
+      initialVersionId !== null &&
+      latestId === initialVersionId
+    ) {
+      console.log(`Modrinth latest unchanged since start: ${latestId}`);
+      return 0;
+    }
+
     const embed = buildEmbedFromVersion(latest);
 
     let postedCount = 0;
@@ -119,7 +154,7 @@ export async function runModrinthCheck(client: Client): Promise<number> {
       try {
         const channel = guild.channels.cache.find(
           (c: GuildBasedChannel) =>
-            c.type === ChannelType.GuildText && c.name === "general",
+            c.type === ChannelType.GuildText && c.name === "minecra",
         ) as TextChannel | undefined;
 
         if (channel) {
@@ -132,6 +167,13 @@ export async function runModrinthCheck(client: Client): Promise<number> {
           err,
         );
       }
+    }
+
+    // If we successfully posted to at least one guild, update the tracked
+    // version so future scheduled runs compare against the last posted version.
+    if (postedCount > 0) {
+      initialVersionId = latestId;
+      console.log(`Updated tracked Modrinth version to: ${initialVersionId}`);
     }
 
     return postedCount;
@@ -162,12 +204,35 @@ export function scheduleModrinthDaily(client: Client) {
     }, delay);
   }
 
-  // start scheduling
-  try {
-    scheduleOnce();
-  } catch (err) {
-    console.error("Failed to start Modrinth daily scheduler:", err);
-  }
+  // Capture initial version at runtime start so we can compare on scheduled runs.
+  (async () => {
+    try {
+      const json = await fetchJson(API_URL);
+      if (Array.isArray(json) && json.length > 0) {
+        initialVersionId = versionIdentifier(json[0]);
+        console.log(
+          `Captured initial Modrinth version at startup: ${initialVersionId}`,
+        );
+      } else {
+        console.warn(
+          "Could not capture initial Modrinth version at startup: empty response",
+        );
+      }
+    } catch (err) {
+      console.error(
+        "Failed to capture initial Modrinth version at startup:",
+        err,
+      );
+      // leave initialVersionId as null to avoid accidental posts
+    }
+
+    // start scheduling after initial capture attempt
+    try {
+      scheduleOnce();
+    } catch (err) {
+      console.error("Failed to start Modrinth daily scheduler:", err);
+    }
+  })();
 }
 
 export default scheduleModrinthDaily;
