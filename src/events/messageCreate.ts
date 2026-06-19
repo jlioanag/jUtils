@@ -17,14 +17,14 @@ const providers: Provider[] = [
         "https://fxtwitter.com",
       ),
   },
-  {
-    name: "reddit",
-    regex: /https?:\/\/(?:www\.)?reddit\.com(\/[^\s]*)/gi,
-    transform: (_original, match) => {
-      const path = match[1] || "";
-      return `https://www.rxddit.com${path}`;
-    },
-  },
+  // {
+  //   name: "reddit",
+  //   regex: /https?:\/\/(?:www\.)?reddit\.com(\/[^\s]*)/gi,
+  //   transform: (_original, match) => {
+  //     const path = match[1] || "";
+  //     return `https://www.rxddit.com${path}`;
+  //   },
+  // },
 ];
 
 module.exports = {
